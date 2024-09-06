@@ -42,7 +42,7 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
           console.error('Error fetching data:', error)
         })
     }
-  }, [loggedUser])
+  }, [loggedUser, backendUrl])
 
   return (
     <>

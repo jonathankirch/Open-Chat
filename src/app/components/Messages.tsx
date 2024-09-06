@@ -56,7 +56,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
     const intervalId = setInterval(fetchApi, 1000)
 
     return () => clearInterval(intervalId)
-  }, [storedUser, user, isGroup])
+  }, [storedUser, user, isGroup, backendUrl])
 
   useEffect(() => {
     // Verifique se o comprimento das mensagens mudou e role para baixo

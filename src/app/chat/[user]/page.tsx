@@ -1,41 +1,38 @@
 'use client'
+
 import Messages from '../../components/Messages'
 import { useState } from 'react'
 import axios from 'axios'
-import { useSearchParams } from 'next/navigation'
-
-import { IoSend } from "react-icons/io5";
-import { IoMdArrowRoundBack } from "react-icons/io";
-
+import { useRouter, useSearchParams } from 'next/navigation'
+import { IoSend } from 'react-icons/io5'
+import { IoMdArrowRoundBack } from 'react-icons/io'
 
 export default function User({ params }: { params: { user: string } }) {
   const [message, setMessage] = useState('')
-
+  const router = useRouter()
   const searchParams = useSearchParams()
   const isGroupParam = searchParams.get('is_group')
   const isGroup = isGroupParam === 'true'
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
-  function sendMessage() {
+  const sendMessage = async () => {
     if (message.trim() === '') return
 
-    axios.post(`${backendUrl}/api/messages/create`, {
-      sender: localStorage.getItem('user'),
-      receiver: decodeURIComponent(params.user),
-      message: message,
-      isGroup
-    })
-
-    document.querySelector('#inputMessage')
-      ? ((document.querySelector('#inputMessage') as HTMLInputElement).value =
-          '')
-      : ''
-    
-    setMessage('')
+    try {
+      await axios.post(`${backendUrl}/api/messages/create`, {
+        sender: localStorage.getItem('user'),
+        receiver: decodeURIComponent(params.user),
+        message: message,
+        isGroup
+      })
+      setMessage('') // Clear the message after sending
+    } catch (error) {
+      console.error('Error sending message:', error)
+    }
   }
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       sendMessage()
     }
@@ -44,12 +41,10 @@ export default function User({ params }: { params: { user: string } }) {
   return (
     <div>
       <header className='text-4xl flex bg-gray-800 mb-3 p-5'>
-        <button onClick={() => window.history.back()}>
-          <IoMdArrowRoundBack className='my-auto mt-1 mr-2' /> 
+        <button onClick={() => router.back()}>
+          <IoMdArrowRoundBack className='my-auto mt-1 mr-2' />
         </button>
-        <h1>
-          {decodeURIComponent(params.user)}
-        </h1>
+        <h1>{decodeURIComponent(params.user)}</h1>
       </header>
       <div>
         <Messages user={decodeURIComponent(params.user)} isGroup={isGroup} />

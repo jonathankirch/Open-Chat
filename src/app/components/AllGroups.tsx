@@ -35,7 +35,7 @@ export default function AllGroups({ onSelectGroup }: AllGroupsProps) {
         })
     }
     fetchApi()
-  }, [loggedUser])
+  }, [loggedUser, backendUrl])
 
   return (
     <>
