@@ -23,7 +23,11 @@ export default function YourRequests() {
   useEffect(() => {
     async function fetchApi() {
       await axios
-        .get(`${backendUrl}/api/friend-request/sent/${storedUser}`)
+        .get(`${backendUrl}/api/friend-request/sent/${storedUser}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        })
         .then((res) => {
           setRequests(res.data)
         })

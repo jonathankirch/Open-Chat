@@ -46,6 +46,10 @@ export default function NewGroup() {
         groupConversationName: groupName,
         creator: localStorage.getItem('user'),
         participantNames: users
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
       console.log('Group created:', response.data)
 

@@ -21,6 +21,10 @@ export default function NewFriend() {
       const response = await axios.post(`${backendUrl}/api/friend-request/send`, {
         sender: loggedUser,
         receiver,
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
       setMessage(response.data)
     } catch (error) {

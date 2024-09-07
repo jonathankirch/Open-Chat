@@ -26,6 +26,10 @@ export default function AllGroups({ onSelectGroup }: AllGroupsProps) {
       await axios
         .post(`${backendUrl}/api/users/findGroups`, {
           user: loggedUser,
+        }, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
         })
         .then((res) => {
           setGroups(res.data)

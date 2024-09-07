@@ -41,7 +41,11 @@ export default function Messages({ user, isGroup }: PropsMessage) {
       }
     
       await axios
-        .post(url, data)
+        .post(url, data, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        })
         .then((res) => {
           setMessages(res.data)
         })

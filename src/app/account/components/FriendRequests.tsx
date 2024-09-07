@@ -21,17 +21,25 @@ export default function FriendRequests() {
   }, []);
 
   useEffect(() => {
+
+    if(storedUser !== '') {
+      fetchApi()
+    }
     async function fetchApi() {
       await axios
-        .get(`${backendUrl}/api/friend-request/pending/${storedUser}`)
+        .get(`${backendUrl}/api/friend-request/pending/${storedUser}`, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
+        })
         .then((res) => {
           setFriendRequests(res.data)
+          console.log(res)
         })
         .catch((error) => {
           console.error('Error fetching data:', error)
         })
     }
-    fetchApi()
   }, [storedUser, backendUrl])
 
   async function recuseRequest(request: FriendRequestProps) {
@@ -39,6 +47,10 @@ export default function FriendRequests() {
       await axios.post(`${backendUrl}/api/friend-request/accept`, {
         requestId: request._id,
         response: 'decline',
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
 
       // Atualizar a lista de solicitações
@@ -57,6 +69,10 @@ export default function FriendRequests() {
       await axios.post(`${backendUrl}/api/friend-request/accept`, {
         requestId: request._id,
         response: 'accepted',
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
 
       // Atualizar a lista de solicitações
@@ -65,12 +81,18 @@ export default function FriendRequests() {
       )
       axios.post(`${backendUrl}/api/conversations/create`, {
         participantNames: [request.sender, storedUser],
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
       console.log('Requisição aceita')
     } catch (error) {
       console.error('Erro ao aceitar a solicitação:', error)
     }
   }
+
+  console.log(friendRequests)
 
   return (
     <>

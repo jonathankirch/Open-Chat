@@ -25,6 +25,10 @@ export default function User({ params }: { params: { user: string } }) {
         receiver: decodeURIComponent(params.user),
         message: message,
         isGroup
+      }, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
       })
       setMessage('') // Clear the message after sending
     } catch (error) {

@@ -14,6 +14,10 @@ export const register = async ({ name, email, password, remember }: RegisterProp
     username: name,
     email,
     password,
+  }, {
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    }
   })
   const saveUser = () => {
     if (remember) {

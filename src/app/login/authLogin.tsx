@@ -11,8 +11,12 @@ export const login = async ({ name, password, remember }: LoginProps) => {
   const response = await axios.post(`${backendUrl}/api/auth/login`, {
     username: name,
     password,
+  }, {
+    headers: {
+      'ngrok-skip-browser-warning': 'true'
+    }
   })
-
+  
   const saveUser = () => {
     if (remember) {
       localStorage.setItem('user', name)

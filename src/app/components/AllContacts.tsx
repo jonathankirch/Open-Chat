@@ -23,17 +23,20 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
       const user =
         localStorage.getItem('user') || sessionStorage.getItem('user') || ''
       setLoggedUser(user)
+      console.log(loggedUser)
+
     }
-  }, [])
+  }, [loggedUser])
 
   useEffect(() => {
-    if (loggedUser) {
-      fetchApi()
-    }
     async function fetchApi() {
       await axios
         .post(`${backendUrl}/api/users/findContacts`, {
           user: loggedUser,
+        }, {
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          }
         })
         .then((res) => {
           setContacts(res.data)
@@ -41,7 +44,8 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
         .catch((error) => {
           console.error('Error fetching data:', error)
         })
-    }
+      }
+      fetchApi()
   }, [loggedUser, backendUrl])
 
   return (
