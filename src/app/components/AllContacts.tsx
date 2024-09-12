@@ -23,8 +23,6 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
       const user =
         localStorage.getItem('user') || sessionStorage.getItem('user') || ''
       setLoggedUser(user)
-      console.log(loggedUser)
-
     }
   }, [loggedUser])
 

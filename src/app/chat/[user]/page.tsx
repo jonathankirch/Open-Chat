@@ -1,11 +1,12 @@
 'use client'
 
 import Messages from '../../components/Messages'
-import { useState } from 'react'
+import { useState,useEffect, useRef } from 'react'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoSend } from 'react-icons/io5'
 import { IoMdArrowRoundBack } from 'react-icons/io'
+import { io } from 'socket.io-client'
 
 export default function User({ params }: { params: { user: string } }) {
   const [message, setMessage] = useState('')
@@ -15,26 +16,58 @@ export default function User({ params }: { params: { user: string } }) {
   const isGroup = isGroupParam === 'true'
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+  const socketRef = useRef<any>(null)  // Referência ao socket
+  // const socketRef = useRef<SocketIOClient.Socket | null>(null)
+  
+  useEffect(() => {
+    const user = localStorage.getItem('user') || sessionStorage.getItem('user') || ''
+    console.log('Iniciando conexão socket para o usuário:', user)
+    
+    if (!socketRef.current) {  
+      const socket = io('http://localhost:5000', { query: { user } })
+      socketRef.current = socket
+      console.log('Socket conectado:', socket.id)
+    }
+  
+    return () => {
+      if (socketRef.current) {
+        console.log('Desconectando socket:', socketRef.current.id)
+        socketRef.current.disconnect()
+        socketRef.current = null
+      }
+    }
+  }, [])
+  
 
   const sendMessage = async () => {
     if (message.trim() === '') return
+    
+    const messageData = {
+      sender: localStorage.getItem('user'),
+      receiver: decodeURIComponent(params.user),
+      content: message,
+      isGroup
+    }
 
     try {
-      await axios.post(`${backendUrl}/api/messages/create`, {
-        sender: localStorage.getItem('user'),
-        receiver: decodeURIComponent(params.user),
-        message: message,
-        isGroup
-      }, {
+       // Verificar se o socket está conectado
+       if (socketRef.current) {
+        socketRef.current.emit('sendMessage', messageData)
+      }
+
+      // Enviar a mensagem também para o servidor via HTTP (opcional)
+      await axios.post(`${backendUrl}/api/messages/create`, messageData, {
         headers: {
           'ngrok-skip-browser-warning': 'true'
         }
       })
-      setMessage('') // Clear the message after sending
+
+      setMessage('') // Limpar a mensagem após o envio
     } catch (error) {
       console.error('Error sending message:', error)
     }
   }
+
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
