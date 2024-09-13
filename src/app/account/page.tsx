@@ -1,5 +1,14 @@
+'use client'
+
 import FriendRequests from "./components/FriendRequests";
 import YourRequests from "./components/YourRequests";
+
+function removeUser() {
+  localStorage.removeItem('user')
+  sessionStorage.removeItem('user')
+
+  window.location.reload()
+}
 
 export default function AccountPage() {
   return (
@@ -20,7 +29,10 @@ export default function AccountPage() {
           <YourRequests />
         </ul>
       </div>
-
+      <hr className="my-10 border-gray-700" />
+      <div className="bg-gray-900 rounded p-5 text-center">
+        <p>Account <button className="font-bold hover:underline" onClick={removeUser}>Log out</button></p>
+      </div>
     </div>
   )
 }
