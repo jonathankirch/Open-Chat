@@ -1,8 +1,8 @@
 'use client'
-// Função para pegar as mensagens da conversa
+
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { io } from 'socket.io-client'
+import { useSocket } from '@/app/SocketProvider' // Importa o provider criado
 
 interface PropsMessage {
   user: string
@@ -22,24 +22,9 @@ export default function Messages({ user, isGroup }: PropsMessage) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [oldLengthMessages, setOldLengthMessages] = useState(0)
 
-  const socketRef = useRef<any>(null) // Referência ao socket
+  const { socket } = useSocket() // Usa o socket do contexto
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-
-  useEffect(() => {
-    // Iniciar a conexão com o Socket.io
-    const socket = io('http://localhost:5000')
-    socketRef.current = socket
-
-    // Ouvir mensagens recebidas
-    socket.on('receiveMessage', (newMessage) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage])
-    })
-
-    return () => {
-      socket.disconnect() // Desconectar o socket ao desmontar o componente
-    }
-  }, [])
 
   useEffect(() => {
     setStoredUser(
@@ -54,10 +39,10 @@ export default function Messages({ user, isGroup }: PropsMessage) {
 
       if (isGroup) {
         url = `${backendUrl}/api/messages/groupMessages`
-        data = { groupName: user, user: storedUser } // ajuste aqui para enviar os dados corretos
+        data = { groupName: user, user: storedUser }
       } else {
         url = `${backendUrl}/api/messages/findByUsers`
-        data = { users: usersArray } // ajuste aqui para enviar os dados corretos
+        data = { users: usersArray }
       }
 
       await axios
@@ -79,7 +64,20 @@ export default function Messages({ user, isGroup }: PropsMessage) {
   }, [backendUrl, isGroup, storedUser, user])
 
   useEffect(() => {
-    // Verifique se o comprimento das mensagens mudou e role para baixo
+    if (socket) {
+      socket.on('receiveMessage', (newMessage) => {
+        if (newMessage.sender === user || newMessage.sender === storedUser) {
+          setMessages((prevMessages) => [...prevMessages, newMessage])
+        }
+      })
+
+      return () => {
+        socket.off('receiveMessage') // Limpar o listener
+      }
+    }
+  }, [socket, user, storedUser])
+
+  useEffect(() => {
     if (messages.length !== oldLengthMessages) {
       if (messagesEndRef.current) {
         messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })

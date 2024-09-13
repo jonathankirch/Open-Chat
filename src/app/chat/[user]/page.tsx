@@ -6,7 +6,7 @@ import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoSend } from 'react-icons/io5'
 import { IoMdArrowRoundBack } from 'react-icons/io'
-import { io } from 'socket.io-client'
+import { useSocket } from '@/app/SocketProvider'
 
 export default function User({ params }: { params: { user: string } }) {
   const [message, setMessage] = useState('')
@@ -16,28 +16,7 @@ export default function User({ params }: { params: { user: string } }) {
   const isGroup = isGroupParam === 'true'
 
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
-  const socketRef = useRef<any>(null)  // Referência ao socket
-  // const socketRef = useRef<SocketIOClient.Socket | null>(null)
-  
-  useEffect(() => {
-    const user = localStorage.getItem('user') || sessionStorage.getItem('user') || ''
-    console.log('Iniciando conexão socket para o usuário:', user)
-    
-    if (!socketRef.current) {  
-      const socket = io('http://localhost:5000', { query: { user } })
-      socketRef.current = socket
-      console.log('Socket conectado:', socket.id)
-    }
-  
-    return () => {
-      if (socketRef.current) {
-        console.log('Desconectando socket:', socketRef.current.id)
-        socketRef.current.disconnect()
-        socketRef.current = null
-      }
-    }
-  }, [])
-  
+  const { socket } = useSocket()
 
   const sendMessage = async () => {
     if (message.trim() === '') return
@@ -51,8 +30,9 @@ export default function User({ params }: { params: { user: string } }) {
 
     try {
        // Verificar se o socket está conectado
-       if (socketRef.current) {
-        socketRef.current.emit('sendMessage', messageData)
+       if (socket) {
+        socket.emit('sendMessage', messageData)
+        
       }
 
       // Enviar a mensagem também para o servidor via HTTP (opcional)
