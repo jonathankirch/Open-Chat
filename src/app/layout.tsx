@@ -17,9 +17,9 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className="text-white h-screen flex flex-col">
         <Header />
-        <main className="flex-grow">
-          <SocketProvider>{children}</SocketProvider>
-        </main>
+        <SocketProvider>
+          <main className="flex-grow">{children}</main>
+        </SocketProvider>
       </body>
     </html>
   )

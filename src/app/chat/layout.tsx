@@ -11,6 +11,7 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
+
 export default function Layout({ children }: LayoutProps) {
   const [isMobile, setIsMobile] = useState(false)
   const [selectedChat, setSelectedChat] = useState<boolean>(false)

@@ -1,7 +1,7 @@
 'use client'
 
 import Messages from '../../components/Messages'
-import { useState,useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoSend } from 'react-icons/io5'
@@ -20,26 +20,25 @@ export default function User({ params }: { params: { user: string } }) {
 
   const sendMessage = async () => {
     if (message.trim() === '') return
-    
+
     const messageData = {
       sender: localStorage.getItem('user'),
       receiver: decodeURIComponent(params.user),
       content: message,
-      isGroup
+      isGroup,
     }
 
     try {
-       // Verificar se o socket está conectado
-       if (socket) {
+      // Verificar se o socket está conectado
+      if (socket) {
         socket.emit('sendMessage', messageData)
-        
       }
 
       // Enviar a mensagem também para o servidor via HTTP (opcional)
       await axios.post(`${backendUrl}/api/messages/create`, messageData, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
+          'ngrok-skip-browser-warning': 'true',
+        },
       })
 
       setMessage('') // Limpar a mensagem após o envio
@@ -47,7 +46,6 @@ export default function User({ params }: { params: { user: string } }) {
       console.error('Error sending message:', error)
     }
   }
-
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -57,9 +55,9 @@ export default function User({ params }: { params: { user: string } }) {
 
   return (
     <div>
-      <header className='text-4xl flex bg-gray-800 mb-3 p-5'>
+      <header className="text-4xl flex bg-gray-800 mb-3 p-5">
         <button onClick={() => router.back()}>
-          <IoMdArrowRoundBack className='my-auto mt-1 mr-2' />
+          <IoMdArrowRoundBack className="my-auto mt-1 mr-2" />
         </button>
         <h1>{decodeURIComponent(params.user)}</h1>
       </header>

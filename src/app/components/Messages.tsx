@@ -56,7 +56,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
         })
         .catch((error) => {
           console.error('Error fetching data:', error)
-          setErrorMessage(error.response.data.msg)
+          setErrorMessage(error.response.data.msg || 'Error fetching data')
         })
     }
 
@@ -69,6 +69,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
         if (newMessage.sender === user || newMessage.sender === storedUser) {
           setMessages((prevMessages) => [...prevMessages, newMessage])
         }
+        console.log('Nova mensagem recebida pelo socket')
       })
 
       return () => {
