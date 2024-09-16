@@ -63,10 +63,10 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex-grow">
                 <AllContacts onSelectContact={() => setSelectedChat(true)} />
               </div>
-              <p className="mb-5 text-xl font-bold">Groups:</p>
+              {/* <p className="mb-5 text-xl font-bold">Groups:</p>
               <div className="flex-grow">
                 <AllGroups onSelectGroup={() => setSelectedChat(true)} />
-              </div>
+              </div> */}
             </section>
             <section className="col-span-3 bg-gray-700 h-full">
               {children}
