@@ -48,7 +48,7 @@ export default function NewGroup() {
         participantNames: users
       }, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+          'bypass-tunnel-reminder': 'true'
         }
       })
       console.log('Group created:', response.data)

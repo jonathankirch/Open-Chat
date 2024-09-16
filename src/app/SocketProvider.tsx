@@ -19,26 +19,26 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const user = localStorage.getItem('user')
-
-    // Criar o socket apenas uma vez
+    console.log('Conectando ao Socket.io com URL:', backendUrl)
+  
     const socket = io(`${backendUrl}`, { query: { user } })
     socketRef.current = socket
-
+  
     socket.on('connect', () => {
       console.log('Conectado ao servidor de WebSocket')
       setIsSocketConnected(true)
     })
-
+  
     socket.on('disconnect', () => {
       console.log('Desconectado do servidor de WebSocket')
       setIsSocketConnected(false)
     })
-
+  
     return () => {
-      // Desconectar o socket ao desmontar o componente
       socket.disconnect()
     }
   }, [])
+  
 
   console.log('Socket conectado?', isSocketConnected)
 

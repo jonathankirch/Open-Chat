@@ -37,7 +37,7 @@ export default function User({ params }: { params: { user: string } }) {
       // Enviar a mensagem também para o servidor via HTTP (opcional)
       await axios.post(`${backendUrl}/api/messages/create`, messageData, {
         headers: {
-          'ngrok-skip-browser-warning': 'true',
+          'bypass-tunnel-reminder': 'true',
         },
       })
 

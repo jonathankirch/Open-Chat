@@ -25,7 +25,7 @@ export default function YourRequests() {
       await axios
         .get(`${backendUrl}/api/friend-request/sent/${storedUser}`, {
           headers: {
-            'ngrok-skip-browser-warning': 'true'
+            'bypass-tunnel-reminder': 'true'
           }
         })
         .then((res) => {

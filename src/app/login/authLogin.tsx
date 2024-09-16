@@ -13,7 +13,7 @@ export const login = async ({ name, password, remember }: LoginProps) => {
     password,
   }, {
     headers: {
-      'ngrok-skip-browser-warning': 'true'
+      'bypass-tunnel-reminder': 'true'
     }
   })
   

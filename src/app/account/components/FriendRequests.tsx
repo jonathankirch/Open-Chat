@@ -71,7 +71,7 @@ export default function FriendRequests() {
         response: 'accepted',
       }, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+          'bypass-tunnel-reminder': 'true'
         }
       })
 

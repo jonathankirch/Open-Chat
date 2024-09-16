@@ -48,7 +48,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
       await axios
         .post(url, data, {
           headers: {
-            'ngrok-skip-browser-warning': 'true',
+            'bypass-tunnel-reminder': 'true',
           },
         })
         .then((res) => {

@@ -23,7 +23,7 @@ export default function NewFriend() {
         receiver,
       }, {
         headers: {
-          'ngrok-skip-browser-warning': 'true'
+          'bypass-tunnel-reminder': 'true'
         }
       })
       setMessage(response.data)

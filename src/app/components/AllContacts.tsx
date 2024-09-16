@@ -33,7 +33,7 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
           user: loggedUser,
         }, {
           headers: {
-            'ngrok-skip-browser-warning': 'true'
+            'bypass-tunnel-reminder': 'true'
           }
         })
         .then((res) => {
