@@ -6,11 +6,11 @@ import AllContacts from '../components/AllContacts'
 import AllGroups from '../components/AllGroups'
 import AuthProps from '../components/AuthVerify'
 import UAParser from 'ua-parser-js'
+import { SocketProvider } from '../SocketProvider'
 
 interface LayoutProps {
   children: React.ReactNode
 }
-
 
 export default function Layout({ children }: LayoutProps) {
   const [isMobile, setIsMobile] = useState(false)
@@ -22,7 +22,9 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     const parser = new UAParser()
     const result = parser.getResult()
-    setIsMobile(result.device.type === 'mobile' || result.device.type === 'tablet')
+    setIsMobile(
+      result.device.type === 'mobile' || result.device.type === 'tablet'
+    )
   }, [])
 
   useEffect(() => {
@@ -36,44 +38,46 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <AuthProps>
-      <div className="h-full">
-        {isMobile ? (
-          <div className="h-full">
-            {selectedChat ? (
-              <section className="bg-gray-700 h-full">
-                {children}
-              </section>
-            ) : (
-              <section className="p-5 bg-gray-800 border-r border-gray-100 flex flex-col h-full">
+      <SocketProvider>
+        <div className="h-full">
+          {isMobile ? (
+            <div className="h-full">
+              {selectedChat ? (
+                <section className="bg-gray-700 h-full">{children}</section>
+              ) : (
+                <section className="p-5 bg-gray-800 border-r border-gray-100 flex flex-col h-full">
+                  <p className="mb-5 text-xl font-bold">Contacts:</p>
+                  <div className="flex-grow">
+                    <AllContacts
+                      onSelectContact={() => setSelectedChat(true)}
+                    />
+                  </div>
+                  {/* <p className="mb-5 text-xl font-bold">Groups:</p>
+                <div className="flex-grow">
+                  <AllGroups onSelectGroup={() => setSelectedChat(true)} />
+                </div> */}
+                </section>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 h-full">
+              <section className="col-span-1 p-5 bg-gray-800 border-r border-gray-100 flex flex-col h-full">
                 <p className="mb-5 text-xl font-bold">Contacts:</p>
                 <div className="flex-grow">
                   <AllContacts onSelectContact={() => setSelectedChat(true)} />
                 </div>
                 {/* <p className="mb-5 text-xl font-bold">Groups:</p>
-                <div className="flex-grow">
-                  <AllGroups onSelectGroup={() => setSelectedChat(true)} />
-                </div> */}
-              </section>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-4 h-full">
-            <section className="col-span-1 p-5 bg-gray-800 border-r border-gray-100 flex flex-col h-full">
-              <p className="mb-5 text-xl font-bold">Contacts:</p>
-              <div className="flex-grow">
-                <AllContacts onSelectContact={() => setSelectedChat(true)} />
-              </div>
-              {/* <p className="mb-5 text-xl font-bold">Groups:</p>
               <div className="flex-grow">
                 <AllGroups onSelectGroup={() => setSelectedChat(true)} />
               </div> */}
-            </section>
-            <section className="col-span-3 bg-gray-700 h-full">
-              {children}
-            </section>
-          </div>
-        )}
-      </div>
+              </section>
+              <section className="col-span-3 bg-gray-700 h-full">
+                {children}
+              </section>
+            </div>
+          )}
+        </div>
+      </SocketProvider>
     </AuthProps>
   )
 }
