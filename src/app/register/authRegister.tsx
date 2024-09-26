@@ -1,4 +1,7 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 
 interface RegisterProps {
   name: string
@@ -7,29 +10,45 @@ interface RegisterProps {
   remember: boolean
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const notifySuccess = () => toast.success('Account created!')
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
-export const register = async ({ name, email, password, remember }: RegisterProps) => {
-  const response = await axios.post(`${backendUrl}/api/auth/register`, {
-    username: name,
-    email,
-    password,
-  }, {
-    headers: {
-      'bypass-tunnel-reminder': 'true'
-    }
-  })
-  const saveUser = () => {
-    if (remember) {
-      localStorage.setItem('user', name)
-    } else {
-      sessionStorage.setItem('user', name)
-    }
-  }
+export const useRegister = () => {
+  const router = useRouter()
 
-  if (response.status === 201) {
-    saveUser()
-  }
+  const register = useCallback(
+    async ({ name, email, password, remember }: RegisterProps) => {
+      const response = await axios.post(
+        `${backendUrl}/api/auth/register`,
+        {
+          username: name,
+          email,
+          password,
+        },
+        {
+          headers: {
+            'bypass-tunnel-reminder': 'true',
+          },
+        }
+      )
+      const saveUser = (token: string) => {
+        if (remember) {
+          localStorage.setItem('token', token)
+        } else {
+          sessionStorage.setItem('token', token)
+        }
+      }
 
-  return response
+      if (response.status === 201) {
+        saveUser(response.data.token)
+        notifySuccess()
+        router.push('/chat')
+      }
+
+      return response
+    },
+    [router]
+  )
+
+  return { register }
 }
