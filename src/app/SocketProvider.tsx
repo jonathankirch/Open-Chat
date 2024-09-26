@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       return
     }
 
-    const socket = io(`${backendUrl}`, { query: { user: token } })
+    const socket = io(`${backendUrl}`, { auth: { token } })
     socketRef.current = socket
 
     socket.on('connect', () => {
