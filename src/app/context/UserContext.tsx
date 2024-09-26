@@ -26,10 +26,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sessionStorage.setItem('token', newToken);
         setContextToken(newToken);
       }
-    } else {
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('token');
-      setContextToken(null);
     }
   };
 
