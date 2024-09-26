@@ -16,8 +16,8 @@ export default function AllGroups({ onSelectGroup }: AllGroupsProps) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user') || sessionStorage.getItem('user') ||''
-      setLoggedUser(user)
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token') ||''
+      setLoggedUser(token)
     }
   }, [])
 
@@ -25,7 +25,7 @@ export default function AllGroups({ onSelectGroup }: AllGroupsProps) {
     async function fetchApi() {
       await axios
         .post(`${backendUrl}/api/users/findGroups`, {
-          user: loggedUser,
+          token: loggedUser,
         }, {
           headers: {
             'bypass-tunnel-reminder': 'true'

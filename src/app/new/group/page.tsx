@@ -44,7 +44,7 @@ export default function NewGroup() {
     try {
       const response = await axios.post(`${backendUrl}/api/group-conversations/create`, {
         groupConversationName: groupName,
-        creator: localStorage.getItem('user'),
+        creator: localStorage.getItem('token') || sessionStorage.getItem('token'),
         participantNames: users
       }, {
         headers: {

@@ -9,32 +9,31 @@ interface FriendRequestProps {
 
 export default function FriendRequests() {
   const [friendRequests, setFriendRequests] = useState<FriendRequestProps[]>([])
-  const [storedUser, setStoredUser] = useState('');
+  const [storedUser, setStoredUser] = useState('')
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user') || sessionStorage.getItem('user') ||'';
-      setStoredUser(user);
+      const user =
+        localStorage.getItem('token') || sessionStorage.getItem('token  ') || ''
+      setStoredUser(user)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-
-    if(storedUser !== '') {
+    if (storedUser !== '' || storedUser !== undefined) {
       fetchApi()
     }
     async function fetchApi() {
       await axios
         .get(`${backendUrl}/api/friend-request/pending/${storedUser}`, {
           headers: {
-            'ngrok-skip-browser-warning': 'true'
-          }
+            'ngrok-skip-browser-warning': 'true',
+          },
         })
         .then((res) => {
           setFriendRequests(res.data)
-          console.log(res)
         })
         .catch((error) => {
           console.error('Error fetching data:', error)
@@ -44,14 +43,18 @@ export default function FriendRequests() {
 
   async function recuseRequest(request: FriendRequestProps) {
     try {
-      await axios.post(`${backendUrl}/api/friend-request/accept`, {
-        requestId: request._id,
-        response: 'decline',
-      }, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
+      await axios.post(
+        `${backendUrl}/api/friend-request/accept`,
+        {
+          requestId: request._id,
+          response: 'decline',
+        },
+        {
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
         }
-      })
+      )
 
       // Atualizar a lista de solicitações
       setFriendRequests((prevRequests) =>
@@ -66,33 +69,41 @@ export default function FriendRequests() {
 
   async function acceptRequest(request: FriendRequestProps) {
     try {
-      await axios.post(`${backendUrl}/api/friend-request/accept`, {
-        requestId: request._id,
-        response: 'accepted',
-      }, {
-        headers: {
-          'bypass-tunnel-reminder': 'true'
+      await axios.post(
+        `${backendUrl}/api/friend-request/accept`,
+        {
+          requestId: request._id,
+          response: 'accepted',
+        },
+        {
+          headers: {
+            'bypass-tunnel-reminder': 'true',
+          },
         }
-      })
+      )
 
       // Atualizar a lista de solicitações
       setFriendRequests((prevRequests) =>
         prevRequests.filter((req) => req._id !== request._id)
       )
-      axios.post(`${backendUrl}/api/conversations/create`, {
-        participantNames: [request.sender, storedUser],
-      }, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
+      axios.post(
+        `${backendUrl}/api/conversations/create`,
+        {
+          // participantNames: [request.sender, storedUser],
+          user: storedUser,
+          otherParticipants: [request.sender],
+        },
+        {
+          headers: {
+            'ngrok-skip-browser-warning': 'true',
+          },
         }
-      })
+      )
       console.log('Requisição aceita')
     } catch (error) {
       console.error('Erro ao aceitar a solicitação:', error)
     }
   }
-
-  console.log(friendRequests)
 
   return (
     <>
@@ -115,7 +126,7 @@ export default function FriendRequests() {
           </li>
         ))
       ) : (
-        <p className='text-gray-400'>No friend requests</p>
+        <p className="text-gray-400">No friend requests</p>
       )}
     </>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import Messages from '../../components/Messages'
-import { useState, useEffect, useRef } from 'react'
+import { useState} from 'react'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoSend } from 'react-icons/io5'
@@ -22,7 +22,7 @@ export default function User({ params }: { params: { user: string } }) {
     if (message.trim() === '') return
 
     const messageData = {
-      sender: localStorage.getItem('user'),
+      sender: localStorage.getItem('token') || sessionStorage.getItem('token'),
       receiver: decodeURIComponent(params.user),
       content: message,
       isGroup,

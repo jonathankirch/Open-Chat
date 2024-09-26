@@ -16,8 +16,10 @@ interface MessageProps {
 
 export default function Messages({ user, isGroup }: PropsMessage) {
   const [messages, setMessages] = useState<MessageProps[]>([])
-  const [storedUser, setStoredUser] = useState('')
+  const [storedToken, setStoredToken] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+
+  const [localStorageUser, setLocalStorageUser ] = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [oldLengthMessages, setOldLengthMessages] = useState(0)
@@ -27,22 +29,23 @@ export default function Messages({ user, isGroup }: PropsMessage) {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
   useEffect(() => {
-    setStoredUser(
-      localStorage.getItem('user') || sessionStorage.getItem('user') || ''
+    setStoredToken(
+      localStorage.getItem('token') || sessionStorage.getItem('token') || ''
     )
 
+    setLocalStorageUser(localStorage.getItem('user') || sessionStorage.getItem('user') || '')
+
     async function fetchApi() {
-      const usersArray = [user, storedUser]
 
       let url = ''
       let data = {}
 
       if (isGroup) {
         url = `${backendUrl}/api/messages/groupMessages`
-        data = { groupName: user, user: storedUser }
+        data = { groupName: user, user: storedToken }
       } else {
         url = `${backendUrl}/api/messages/findByUsers`
-        data = { users: usersArray }
+        data = { user1: storedToken, user2: user }
       }
 
       await axios
@@ -61,22 +64,24 @@ export default function Messages({ user, isGroup }: PropsMessage) {
     }
 
     fetchApi()
-  }, [backendUrl, isGroup, storedUser, user])
+  }, [backendUrl, isGroup, user, storedToken])
 
   useEffect(() => {
     if (socket) {
       socket.on('receiveMessage', (newMessage) => {
-        if (newMessage.sender === user || newMessage.sender === storedUser) {
+        if (newMessage.sender === localStorageUser || newMessage.sender === user) {
           setMessages((prevMessages) => [...prevMessages, newMessage])
+          console.log('Nova mensagem recebida pelo socket:', newMessage)
+          console.log('user localStorage: ', localStorageUser)
         }
-        console.log('Nova mensagem recebida pelo socket')
+        console.log('New Message:', newMessage)
       })
 
       return () => {
         socket.off('receiveMessage') // Limpar o listener
       }
     }
-  }, [socket, user, storedUser])
+  }, [socket, user, storedToken, localStorageUser])
 
   useEffect(() => {
     if (messages.length !== oldLengthMessages) {
@@ -95,13 +100,13 @@ export default function Messages({ user, isGroup }: PropsMessage) {
             <li
               key={index}
               className={`py-2 ml-2 px-3 break-words border md:max-w-xl max-w-[calc(100%/2)] my-3 ${
-                message.sender === storedUser
+                message.sender === localStorageUser
                   ? 'ml-auto bg-gray-400 text-black rounded-l'
                   : ' rounded-r'
               }`}>
               {isGroup ? (
                 <span>
-                  {message.sender !== storedUser && (
+                  {message.sender !== localStorageUser && (
                     <>
                       <span className="font-bold">{message.sender}: </span>
                       <br />

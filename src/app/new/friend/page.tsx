@@ -12,7 +12,7 @@ export default function NewFriend() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user') || ''
+      const user = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       setLoggedUser(user)
     }
   }, [])

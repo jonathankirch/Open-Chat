@@ -2,10 +2,12 @@
 
 import FriendRequests from "./components/FriendRequests";
 import YourRequests from "./components/YourRequests";
+import { toast } from 'react-toastify'
 
 function removeUser() {
-  localStorage.removeItem('user')
-  sessionStorage.removeItem('user')
+  localStorage.removeItem('token')
+  sessionStorage.removeItem('token')
+  toast.success('Log out success!')
 
   window.location.reload()
 }

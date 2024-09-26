@@ -21,7 +21,7 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const user =
-        localStorage.getItem('user') || sessionStorage.getItem('user') || ''
+        localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       setLoggedUser(user)
     }
   }, [loggedUser])
@@ -30,7 +30,7 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
     async function fetchApi() {
       await axios
         .post(`${backendUrl}/api/users/findContacts`, {
-          user: loggedUser,
+          token: loggedUser,
         }, {
           headers: {
             'bypass-tunnel-reminder': 'true'

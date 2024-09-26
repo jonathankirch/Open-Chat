@@ -3,10 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import AllContacts from '../components/AllContacts'
-import AllGroups from '../components/AllGroups'
-import AuthProps from '../components/AuthVerify'
 import UAParser from 'ua-parser-js'
-import { SocketProvider } from '../SocketProvider'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -37,8 +34,8 @@ export default function Layout({ children }: LayoutProps) {
   }, [searchParams, isGroupParam])
 
   return (
-    <AuthProps>
-      <SocketProvider>
+    <>
+    {/* <AuthVerify> */}
         <div className="h-full">
           {isMobile ? (
             <div className="h-full">
@@ -77,7 +74,8 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           )}
         </div>
-      </SocketProvider>
-    </AuthProps>
+    {/* </AuthVerify> */}
+    </>
+
   )
 }

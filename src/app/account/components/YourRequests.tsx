@@ -15,7 +15,7 @@ export default function YourRequests() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user') || sessionStorage.getItem('user') || ''
+      const user = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       setStoredUser(user)
     }
   }, [])

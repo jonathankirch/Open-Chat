@@ -1,4 +1,3 @@
-// SocketProvider.tsx
 'use client'
 
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
@@ -16,29 +15,43 @@ export const useSocket = () => useContext(SocketContext)
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const socketRef = useRef<Socket | null>(null)
   const [isSocketConnected, setIsSocketConnected] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
-    const user = localStorage.getItem('user')
-    console.log('Conectando ao Socket.io com URL:', backendUrl)
-  
-    const socket = io(`${backendUrl}`, { query: { user } })
+    // Garantir que o código só rode no lado do cliente
+    if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem('token') || sessionStorage.getItem('token'))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!token) {
+      console.error('Token não encontrado.')
+      return
+    }
+
+    if (socketRef.current) {
+      console.log('Socket já conectado')
+      return
+    }
+
+    const socket = io(`${backendUrl}`, { query: { user: token } })
     socketRef.current = socket
-  
+
     socket.on('connect', () => {
       console.log('Conectado ao servidor de WebSocket')
       setIsSocketConnected(true)
     })
-  
+
     socket.on('disconnect', () => {
       console.log('Desconectado do servidor de WebSocket')
       setIsSocketConnected(false)
     })
-  
+
     return () => {
-      socket.disconnect()
-    }
-  }, [])
-  
+      socket.disconnect();
+    };
+  }, [token])
 
   console.log('Socket conectado?', isSocketConnected)
 
