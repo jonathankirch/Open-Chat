@@ -27,7 +27,7 @@ export const useLogin = () => {
         },
         {
           headers: {
-            'bypass-tunnel-reminder': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         }
       )

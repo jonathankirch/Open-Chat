@@ -1,7 +1,7 @@
 'use client'
 
 import Messages from '../../components/Messages'
-import { useState} from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoSend } from 'react-icons/io5'
@@ -37,7 +37,7 @@ export default function User({ params }: { params: { user: string } }) {
       // Enviar a mensagem também para o servidor via HTTP (opcional)
       await axios.post(`${backendUrl}/api/messages/create`, messageData, {
         headers: {
-          'bypass-tunnel-reminder': 'true',
+          'bypass-tunnel-reminder': '1',
         },
       })
 

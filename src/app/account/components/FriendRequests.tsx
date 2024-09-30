@@ -29,7 +29,7 @@ export default function FriendRequests() {
       await axios
         .get(`${backendUrl}/api/friend-request/pending/${storedUser}`, {
           headers: {
-            'ngrok-skip-browser-warning': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         })
         .then((res) => {
@@ -51,7 +51,7 @@ export default function FriendRequests() {
         },
         {
           headers: {
-            'ngrok-skip-browser-warning': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         }
       )
@@ -77,7 +77,7 @@ export default function FriendRequests() {
         },
         {
           headers: {
-            'bypass-tunnel-reminder': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         }
       )
@@ -95,7 +95,7 @@ export default function FriendRequests() {
         },
         {
           headers: {
-            'ngrok-skip-browser-warning': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         }
       )

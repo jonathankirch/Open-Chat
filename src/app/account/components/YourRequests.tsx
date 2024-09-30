@@ -11,11 +11,12 @@ export default function YourRequests() {
   const [requests, setRequests] = useState<FriendRequestProps[]>([])
   const [storedUser, setStoredUser] = useState('')
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
+      const user =
+        localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       setStoredUser(user)
     }
   }, [])
@@ -25,8 +26,8 @@ export default function YourRequests() {
       await axios
         .get(`${backendUrl}/api/friend-request/sent/${storedUser}`, {
           headers: {
-            'bypass-tunnel-reminder': 'true'
-          }
+            'bypass-tunnel-reminder': '1',
+          },
         })
         .then((res) => {
           setRequests(res.data)
@@ -45,7 +46,9 @@ export default function YourRequests() {
         requests.map((request, index) => (
           <li key={index} className="text-gray-400">
             {request.receiver} -{' '}
-            <strong className='font-normal' style={{ color: getStatusColor(request.status) }}>
+            <strong
+              className="font-normal"
+              style={{ color: getStatusColor(request.status) }}>
               {request.status}
             </strong>
           </li>

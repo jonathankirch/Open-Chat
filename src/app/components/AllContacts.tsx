@@ -29,21 +29,25 @@ export default function AllContacts({ onSelectContact }: AllContactsProps) {
   useEffect(() => {
     async function fetchApi() {
       await axios
-        .post(`${backendUrl}/api/users/findContacts`, {
-          token: loggedUser,
-        }, {
-          headers: {
-            'bypass-tunnel-reminder': 'true'
+        .post(
+          `${backendUrl}/api/users/findContacts`,
+          {
+            token: loggedUser,
+          },
+          {
+            headers: {
+              'bypass-tunnel-reminder': '1',
+            },
           }
-        })
+        )
         .then((res) => {
           setContacts(res.data)
         })
         .catch((error) => {
           console.error('Error fetching data:', error)
         })
-      }
-      fetchApi()
+    }
+    fetchApi()
   }, [loggedUser, backendUrl])
 
   return (

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import axios from 'axios'
 import { useUserContext } from '../context/UserContext'
+import { headers } from 'next/headers'
 
 interface AuthProps {
   children: React.ReactNode
@@ -31,12 +32,20 @@ export default function AuthVerify({ children }: AuthProps) {
     async function fetchApi() {
       if (token || contextToken) {
         try {
-          const res = await axios.post(`${backendUrl}/api/auth/verify`, {
-            token: token || contextToken,
-          })
+          const res = await axios.post(
+            `${backendUrl}/api/auth/verify`,
+            {
+              token: token || contextToken,
+            },
+            {
+              headers: {
+                'bypass-tunnel-reminder': '1',
+              },
+            }
+          )
           console.log('status da requisicao de auth verify: ', res.status)
           if (res.status === 200) {
-            if (localStorage.getItem('token') !== null){
+            if (localStorage.getItem('token') !== null) {
               localStorage.setItem('user', res.data.user)
             } else {
               sessionStorage.setItem('user', res.data.user)

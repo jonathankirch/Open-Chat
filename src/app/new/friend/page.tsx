@@ -8,24 +8,29 @@ export default function NewFriend() {
   const [receiver, setReceiver] = useState('')
   const [loggedUser, setLoggedUser] = useState<string>('')
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('token') || sessionStorage.getItem('token') || ''
+      const user =
+        localStorage.getItem('token') || sessionStorage.getItem('token') || ''
       setLoggedUser(user)
     }
   }, [])
   async function fetchApi() {
     try {
-      const response = await axios.post(`${backendUrl}/api/friend-request/send`, {
-        sender: loggedUser,
-        receiver,
-      }, {
-        headers: {
-          'bypass-tunnel-reminder': 'true'
+      const response = await axios.post(
+        `${backendUrl}/api/friend-request/send`,
+        {
+          sender: loggedUser,
+          receiver,
+        },
+        {
+          headers: {
+            'bypass-tunnel-reminder': '1',
+          },
         }
-      })
+      )
       setMessage(response.data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -47,7 +52,7 @@ export default function NewFriend() {
       fetchApi()
     }
   }
-  
+
   return (
     <div className="p-5 text-center">
       <h1 className="text-2xl font-bold mb-5 mt-10">New Friend:</h1>
@@ -65,7 +70,7 @@ export default function NewFriend() {
         Add
       </button>
 
-      <p className='mt-5'>{message}</p>
+      <p className="mt-5">{message}</p>
     </div>
   )
 }

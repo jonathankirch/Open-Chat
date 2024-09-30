@@ -11,7 +11,6 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [contextToken, setContextToken] = useState<string | null>(null);
-
   useEffect(() => {
     const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     setContextToken(storedToken);

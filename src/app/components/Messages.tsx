@@ -19,7 +19,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
   const [storedToken, setStoredToken] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const [localStorageUser, setLocalStorageUser ] = useState('')
+  const [localStorageUser, setLocalStorageUser] = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [oldLengthMessages, setOldLengthMessages] = useState(0)
@@ -33,10 +33,11 @@ export default function Messages({ user, isGroup }: PropsMessage) {
       localStorage.getItem('token') || sessionStorage.getItem('token') || ''
     )
 
-    setLocalStorageUser(localStorage.getItem('user') || sessionStorage.getItem('user') || '')
+    setLocalStorageUser(
+      localStorage.getItem('user') || sessionStorage.getItem('user') || ''
+    )
 
     async function fetchApi() {
-
       let url = ''
       let data = {}
 
@@ -51,7 +52,7 @@ export default function Messages({ user, isGroup }: PropsMessage) {
       await axios
         .post(url, data, {
           headers: {
-            'bypass-tunnel-reminder': 'true',
+            'bypass-tunnel-reminder': '1',
           },
         })
         .then((res) => {
@@ -69,7 +70,10 @@ export default function Messages({ user, isGroup }: PropsMessage) {
   useEffect(() => {
     if (socket) {
       socket.on('receiveMessage', (newMessage) => {
-        if (newMessage.sender === localStorageUser || newMessage.sender === user) {
+        if (
+          newMessage.sender === localStorageUser ||
+          newMessage.sender === user
+        ) {
           setMessages((prevMessages) => [...prevMessages, newMessage])
           console.log('Nova mensagem recebida pelo socket:', newMessage)
           console.log('user localStorage: ', localStorageUser)
