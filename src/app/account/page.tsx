@@ -6,7 +6,9 @@ import { toast } from 'react-toastify'
 
 function removeUser() {
   localStorage.removeItem('token')
+  localStorage.removeItem('user')
   sessionStorage.removeItem('token')
+  sessionStorage.removeItem('user')
   toast.success('Log out success!')
 
   window.location.reload()

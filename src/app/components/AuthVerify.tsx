@@ -36,7 +36,7 @@ export default function AuthVerify({ children }: AuthProps) {
           })
           console.log('status da requisicao de auth verify: ', res.status)
           if (res.status === 200) {
-            if (localStorage.getItem('user') !== null){
+            if (localStorage.getItem('token') !== null){
               localStorage.setItem('user', res.data.user)
             } else {
               sessionStorage.setItem('user', res.data.user)
