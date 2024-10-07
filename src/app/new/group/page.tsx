@@ -13,7 +13,7 @@ export default function NewGroup() {
   const [groupName, setGroupName] = useState<string>('')
   const [message, setMessage] = useState<string>('')
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewUser(event.target.value)
@@ -29,7 +29,7 @@ export default function NewGroup() {
       setNewUser('')
     }
   }
-  
+
   function handleKeyDown2(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       handleAddUser()
@@ -42,27 +42,32 @@ export default function NewGroup() {
 
   const handleCreateGroup = async () => {
     try {
-      const response = await axios.post(`${backendUrl}/api/group-conversations/create`, {
-        groupConversationName: groupName,
-        creator: localStorage.getItem('token') || sessionStorage.getItem('token'),
-        participantNames: users
-      }, {
-        headers: {
-          'bypass-tunnel-reminder': 'true'
+      const response = await axios.post(
+        `${backendUrl}/api/group-conversations/create`,
+        {
+          groupConversationName: groupName,
+          creator:
+            localStorage.getItem('token') || sessionStorage.getItem('token'),
+          participantNames: users,
+        },
+        {
+          headers: {
+            'bypass-tunnel-reminder': '1',
+          },
         }
-      })
+      )
       console.log('Group created:', response.data)
 
       setMessage(response.data)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // Verifica se o erro é um AxiosError
-        console.error('Error creating group:', error);
-        setMessage(error.response?.data || 'An unknown error occurred');
+        console.error('Error creating group:', error)
+        setMessage(error.response?.data || 'An unknown error occurred')
       } else {
         // Caso não seja um AxiosError, lidar com outros tipos de erro
-        console.error('Unexpected error:', error);
-        setMessage('An unexpected error occurred');
+        console.error('Unexpected error:', error)
+        setMessage('An unexpected error occurred')
       }
     }
   }
@@ -72,7 +77,6 @@ export default function NewGroup() {
       handleAddUser()
     }
   }
-
 
   return (
     <div className="p-5 text-center">
@@ -106,17 +110,21 @@ export default function NewGroup() {
         Add
       </button>
       <div className="flex w-1/2 mx-auto justify-center">
-        {groupName ? (<p><span className='font-bold'>Group Name:</span> {groupName} </p>)
-         : (
+        {groupName ? (
+          <p>
+            <span className="font-bold">Group Name:</span> {groupName}{' '}
+          </p>
+        ) : (
           <p className="mt-2">No name added</p>
         )}
       </div>
-      <hr className='w-1/6 mx-auto my-3' />
+      <hr className="w-1/6 mx-auto my-3" />
       <div className="flex w-1/2 mx-auto justify-center">
         {users.length > 0 ? (
           users.map((user, index) => (
             <p key={index} className="ml-2">
-             <span className='font-bold'>Participants: </span>{user},
+              <span className="font-bold">Participants: </span>
+              {user},
             </p>
           ))
         ) : (

@@ -41,7 +41,7 @@ export default function User({ params }: { params: { user: string } }) {
         },
       })
 
-      setMessage('') // Limpar a mensagem após o envio
+      setMessage('')
     } catch (error) {
       console.error('Error sending message:', error)
     }
